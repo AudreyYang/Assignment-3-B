@@ -36,6 +36,10 @@ d3.csv('/data/world_bank_2012.csv', parse, dataLoaded);
 function parse(d){
 
     //Eliminate records for which gdp per capita isn't available
+
+    /*(boolean value) ? a : b
+     If boolean value is true, return a; otherwise, return b.*/
+
     if(d['GDP per capita, PPP (constant 2011 international $)']=='..'){
         return;
     }
@@ -44,10 +48,11 @@ function parse(d){
     //if figure is unavailable and denoted as "..", replace it with undefined
     //otherwise, parse the figure into numbers
 
+
     return {
         cName: d['Country Name'],
         cCode: d['Country Code'],
-        gdpPerCap: +d['GDP per capita, PPP (constant 2011 international $)'],
+        gdpPerCap: d['GDP per capita, PPP (constant 2011 international $)']!='..'?+d['GDP per capita, PPP (constant 2011 international $)']:undefined,
         primaryCompletion: d['Primary completion rate, total (% of relevant age group)']!='..'?+d['Primary completion rate, total (% of relevant age group)']:undefined,
         urbanPop: d['Urban population (% of total)']!='..'?+d['Urban population (% of total)']:undefined
 
@@ -57,8 +62,14 @@ function parse(d){
 function dataLoaded(error, rows){
     //with data loaded, we can now mine the data
     var gdpPerCapMin = d3.min(rows, function(d){return d.gdpPerCap}),
-        gdpPerCapMax = d3.max(rows, function(d){return d.gdpPerCap});
+        gdpPerCapMax = d3.max(rows, function(d){return d.gdpPerCap}),
+        primaryCompletionMax = d3.max(rows, function(d){return d.primaryCompletion}),
+        urbanPopMax = d3.max(rows, function(d){return d.urbanPop});
 
+    console.log(gdpPerCapMin);
+    console.log(gdpPerCapMax);
+    console.log(primaryCompletionMax);
+    console.log(urbanPopMax);
 
     //with mined information, set up domain and range for x and y scales
     //Log scale for x, linear scale for y
@@ -107,7 +118,7 @@ function dataLoaded(error, rows){
                 return scaleY(d.primaryCompletion);
             }
         })
-        .style('stroke','red')
+        .style('stroke','hsl(0,80%,80%)')
         .style('stroke-width','1px')
 
 
@@ -127,7 +138,7 @@ function dataLoaded(error, rows){
                 return scaleY(d.urbanPop);
             }
         })
-        .style('stroke','blue')
+        .style('stroke','hsl(200,80%,80%')
         .style('stroke-width','1px')
 
 
