@@ -121,7 +121,7 @@ function dataLoaded(error, rows){
             return scaleX(d.gdpPerCap)
         })
         .attr('y2',function(d){
-            if (d.primaryCompletion == undefined) {
+            if (d.urbanPop == undefined) {
                 return height;
             } else {
                 return scaleY(d.urbanPop);
